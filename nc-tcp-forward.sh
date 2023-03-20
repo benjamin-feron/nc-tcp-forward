@@ -15,8 +15,9 @@ FIFO=/tmp/backpipe
 
 trap 'echo "trapped."; pkill nc; rm -f $FIFO; exit 1' 1 2 3 15
 
-mkfifo $FIFO
+[ -e "$FIFO" ] && rm -f "$FIFO"
+mkfifo "$FIFO"
 while true; do
-  nc -l $FRONTPORT <$FIFO | nc $BACKHOST $BACKPORT >$FIFO
+  nc -l $FRONTPORT < "$FIFO" | nc $BACKHOST $BACKPORT > "$FIFO"
 done
-rm -f $FIFO
+rm -f "$FIFO"
